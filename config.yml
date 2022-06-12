@@ -14,9 +14,9 @@ minify:
   minifyOutput: true
 
 params:
-#  env: production # to enable google analytics, opengraph, twitter-cards and schema.
+  env: production # to enable google analytics, opengraph, twitter-cards and schema.
   title: "The Lonely Lands"
-  description: "A land where Dinil Fernando's precious memories are stored"
+  description: "A land where my memories are stored"
   keywords: ["Blog", "The Lonely Lands", "thelonelylands", "Dinil Fernando", "blekmus"]
   # author: "Dinil Fernando"
   # images: ["<link or path of image for opengraph, twitter-cards>"]
@@ -74,7 +74,13 @@ menu:
       name: Archive
       url: /archive/
       weight: 10
+
     - identifier: tags
       name: Tags
       url: /tags/
-      weight: 10
+      weight: 20
+
+    - identifier: anilist
+      name: Anilist
+      url: /anilist/
+      weight: 30

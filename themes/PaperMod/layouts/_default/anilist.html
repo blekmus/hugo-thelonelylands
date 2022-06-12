@@ -1,0 +1,358 @@
+{{- define "main" }} {{- if .Title }}
+<header class="page-header">
+  <h1>{{ .Title }}</h1>
+  {{- if .Description }}
+  <div class="post-description">{{ .Description }}</div>
+  {{- end }}
+</header>
+{{- end }}
+
+<style>
+    .terms-tags {
+        margin-bottom: 30px;
+    }
+    
+    .terms-tags li a {
+        border: solid 2px var(--tertiary);
+        background: initial;
+        cursor: pointer;
+    }
+
+    .terms-tags li.active a {
+        background: var(--tertiary);
+    }
+
+    .post-entry.active .entry-content {
+        color: var(--primary);
+        -webkit-line-clamp: initial;
+    }
+
+    .post-entry:active {
+        transform: none;
+    }
+
+    .entry-link {
+        cursor: pointer;
+    }
+
+    .post-entry.active .entry-link {
+        cursor: default;
+    }
+
+    .loading {
+        text-align: center;
+        margin-top: 10%;
+        font-size: 20px;
+        color: var(--tertiary);
+    }
+</style>
+
+<ul class="terms-tags">
+  <li id="anime" class="active">
+    <a>Anime</a>
+  </li>
+  <li id="manga">
+    <a>Manga</a>
+  </li>
+  <li id="reviews">
+    <a>Reviews</a>
+  </li>
+</ul>
+
+<div id="article-list">
+    <h4 class="loading">Loading...</h4>
+</div>
+
+<script>
+    async function main() {
+        const getData = async (query) => {
+            const url = 'https://graphql.anilist.co'
+
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: query,
+                })
+            }
+
+            const res = await fetch('https://graphql.anilist.co', options)
+            const data = res.json()
+
+            if (data) {
+                return data
+            } else {
+                alert('Error, check console')
+                console.log(data)
+                return null
+            }
+        }
+
+        const filterData = (data, type) => {
+            let reduced = []
+
+            if (type !== 'review') {
+                const lists = data.data.MediaListCollection.lists
+
+                reduced = lists.reduce((acc, list) => {
+                    let entries = list.entries
+                    entries = entries.filter(entry => entry.notes !== null)
+                    entries = entries.filter(entry => entry.notes.length > 200)
+                    entries = entries.map(entry => {
+                        entry.note_words = entry.notes.split(' ').length
+                        return entry
+                    })
+                    acc = acc.concat(entries)
+                    return acc
+                }, [])
+            } else {
+                const reviews = data.data.Page.reviews
+        
+                reduced = reviews.map(entry => {
+                    entry.review_words = entry.body.split(' ').length
+                    return entry
+                })
+            }
+
+            return reduced
+        }
+
+        const setData = (data, type) => {
+            const oldParent = document.querySelector('#article-list')
+            const parent = document.createElement('div')
+            parent.id = 'article-list'
+
+            oldParent.parentNode.insertBefore(parent, oldParent.nextSibling)
+            oldParent.remove()
+
+            if (type !== 'review') {
+                data.reverse().forEach(entry => {
+                    const article = document.createElement('article')
+                    article.classList.add('post-entry')
+
+                    const header = document.createElement('header')
+                    header.classList.add('entry-header')
+
+                    const title = document.createElement('h2')
+                    if (entry.media.title.english) {
+                        title.innerHTML = entry.media.title.english
+                    } else if (entry.media.title.romaji) {
+                        title.innerHTML = entry.media.title.romaji
+                    } else {
+                        title.innerHTML = entry.media.title.native
+                    }
+                    header.appendChild(title)
+
+                    const content = document.createElement('div')
+                    content.classList.add('entry-content')
+
+                    const description = document.createElement('p')
+                    description.innerText = entry.notes
+                    content.appendChild(description)
+
+                    const footer = document.createElement('footer')
+                    footer.classList.add('entry-footer')
+                    footer.innerHTML = `${entry.note_words} words`
+
+                    const link = document.createElement('a')
+                    link.classList.add('entry-link')
+
+                    article.appendChild(header)
+                    article.appendChild(content)
+                    article.appendChild(footer)
+                    article.appendChild(link)
+
+                    parent.appendChild(article)
+                })
+
+            }
+            else {
+                data.forEach(entry => {
+                    const article = document.createElement('article')
+                    article.classList.add('post-entry')
+
+                    const header = document.createElement('header')
+                    header.classList.add('entry-header')
+
+                    const title = document.createElement('h2')
+                    if (entry.media.title.english) {
+                        title.innerHTML = entry.media.title.english
+                    } else if (entry.media.title.romaji) {
+                        title.innerHTML = entry.media.title.romaji
+                    } else {
+                        title.innerHTML = entry.media.title.native
+                    }
+                    header.appendChild(title)
+
+                    const content = document.createElement('div')
+                    content.classList.add('entry-content')
+
+                    const description = document.createElement('p')
+                    description.innerText = entry.body
+                    content.appendChild(description)
+
+                    const footer = document.createElement('footer')
+                    footer.classList.add('entry-footer')
+                    footer.innerHTML = `${entry.review_words} words`
+
+                    const link = document.createElement('a')
+                    link.classList.add('entry-link')
+
+                    article.appendChild(header)
+                    article.appendChild(content)
+                    article.appendChild(footer)
+                    article.appendChild(link)
+
+                    parent.appendChild(article)
+                })
+            }
+        }
+
+        const setListeners = () => {
+            let currentSelected = null
+            const element = document.querySelector('#article-list')
+
+            element.addEventListener('click', (e) => {
+                if (!e.target.matches('.entry-link')) return
+
+                const parent = e.target.parentNode
+                
+                if (currentSelected == parent) {
+                    parent.classList.remove('active')
+                    currentSelected = null
+                    return
+                }
+
+                if (currentSelected) {
+                    parent.classList.add('active')
+                    currentSelected.classList.remove('active')
+                    parent.scrollIntoView({ behavior: 'smooth' })
+                } else {
+                    parent.classList.add('active')
+                    parent.scrollIntoView({ behavior: 'smooth' })
+                }
+
+                currentSelected = parent
+            })
+        }
+
+        // initial vars
+        let currentType = 'anime'
+        let animeData = null
+        let mangaData = null
+        let reviewsData = null
+
+        // get anime data
+        const animeQuery = `
+        query {
+            MediaListCollection(userName: "blekmus", type: ANIME) {
+                lists {
+                entries {
+                    notes
+                    media {
+                    title {
+                        romaji
+                        english
+                        native
+                    }
+                    }
+                }
+                }
+            }
+        }`
+        rawAnimeData = await getData(animeQuery)
+        animeData = filterData(rawAnimeData, 'anime')
+        setData(animeData, 'anime')
+        setListeners()
+
+        // get manga data
+        const mangaQuery = `
+        query {
+            MediaListCollection(userName: "blekmus", type: MANGA) {
+                lists {
+                    entries {
+                        notes
+                        media {
+                            title {
+                                romaji
+                                english
+                                native
+                            }
+                        }
+                    }
+                }
+            }
+        }`
+        rawMangaData = await getData(mangaQuery)
+        mangaData = filterData(rawMangaData, 'manga')
+        
+        // get review data
+        const reviewQuery = `
+        query {
+            Page(perPage: 50) {
+                reviews(userId: 695637) {
+                    summary
+                    body
+                    media {
+                        title {
+                            english
+                            native
+                            romaji
+                        }
+                    }
+                }
+            }
+        }`
+        rawReviewData = await getData(reviewQuery)
+        reviewData = filterData(rawReviewData, 'review')
+
+        // type listeners
+        const anime = document.querySelector('#anime')
+        const manga = document.querySelector('#manga')
+        const reviews = document.querySelector('#reviews')
+
+        anime.addEventListener('click', () => {
+            if (currentType == 'anime') return
+            currentType = 'anime'
+            setData(animeData, 'anime')
+            setListeners()
+
+            manga.classList.remove('active')
+            reviews.classList.remove('active')
+            anime.classList.add('active')
+        })
+
+        manga.addEventListener('click', () => {
+            if (currentType == 'manga') return
+            currentType = 'manga'
+            setData(mangaData, 'manga')
+            setListeners()
+
+            anime.classList.remove('active')
+            reviews.classList.remove('active')
+            manga.classList.add('active')
+        })
+
+        reviews.addEventListener('click', () => {
+            if (currentType == 'review') return
+            currentType = 'review'
+            setData(reviewData, 'review')
+            setListeners()
+
+            anime.classList.remove('active')
+            manga.classList.remove('active')
+            reviews.classList.add('active')
+        })
+        // totalAnimeWordCount = animeData.reduce((acc, entry) => {
+        //     acc = acc + entry.notes
+        //     return acc
+        // }, '')
+    }
+
+    main()
+</script>
+
+{{- end }}{{/* end main */}}
