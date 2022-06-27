@@ -1,9 +1,11 @@
 {{- define "main" }} {{- if .Title }}
 <header class="page-header">
   <h1>{{ .Title }}</h1>
-  {{- if .Description }}
-  <div class="post-description">{{ .Description }}</div>
-  {{- end }}
+  <div class="entry-content">
+      <span id="word-count">0</span> words
+      <strong>·</strong>
+      <span id="entries">0</span> entries
+    </div>
 </header>
 {{- end }}
 
@@ -212,30 +214,19 @@
         }
 
         const setListeners = () => {
-            let currentSelected = null
             const element = document.querySelector('#article-list')
 
             element.addEventListener('click', (e) => {
                 if (!e.target.matches('.entry-link')) return
 
                 const parent = e.target.parentNode
-                
-                if (currentSelected == parent) {
-                    parent.classList.remove('active')
-                    currentSelected = null
-                    return
-                }
 
-                if (currentSelected) {
-                    parent.classList.add('active')
-                    currentSelected.classList.remove('active')
-                    parent.scrollIntoView({ behavior: 'smooth' })
+                if (parent.classList.contains('active')) {
+                    parent.classList.remove('active')
                 } else {
                     parent.classList.add('active')
                     parent.scrollIntoView({ behavior: 'smooth' })
                 }
-
-                currentSelected = parent
             })
         }
 
@@ -346,10 +337,29 @@
             manga.classList.remove('active')
             reviews.classList.add('active')
         })
-        // totalAnimeWordCount = animeData.reduce((acc, entry) => {
-        //     acc = acc + entry.notes
-        //     return acc
-        // }, '')
+
+
+        // all entry count
+        const allEntries = animeData.concat(mangaData, reviewData)
+        document.querySelector('#entries').innerHTML = allEntries.length
+
+        // total words
+        const animeWords = animeData.reduce((acc, entry) => {
+            acc = acc + entry.note_words
+            return acc
+        }, 0)
+        const mangaWords = mangaData.reduce((acc, entry) => {
+            acc = acc + entry.note_words
+            return acc
+        }, 0)
+        const reviewWords = reviewData.reduce((acc, entry) => {
+            acc = acc + entry.review_words
+            return acc
+        }, 0)
+
+        const totalWords = animeWords + mangaWords + reviewWords
+        document.querySelector('#word-count').innerHTML = totalWords
+
     }
 
     main()
