@@ -8,6 +8,8 @@ backend:
 media_folder: "static/images/uploads"
 public_folder: "/images/uploads"
 
+publish_mode: editorial_workflow
+
 collections:
   - name: entries
     label: Entries
@@ -15,7 +17,7 @@ collections:
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     identifier_field: "title"
-    preview_path: posts/{{slug}}
+    preview_path: posts/{{sluessayg}}
     fields:
       - {label: "Title", name: "title", widget: "string"}
       - {label: "Description", name: "description", widget: "string"}
