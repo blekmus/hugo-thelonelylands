@@ -1,18 +1,21 @@
+site_url: https://thelonelylands.com
+display_url: https://thelonelylands.com
+
 backend:
   name: git-gateway
-  branch: master # Branch to update (optional; defaults to master)
-
-publish_mode: editorial_workflow
+  branch: master
 
 media_folder: "static/images/uploads"
 public_folder: "/images/uploads"
 
 collections:
-  - name: "entries"
-    label: "Entries" # Used in the UI
-    folder: "content/posts"
+  - name: entries
+    label: Entries
+    folder: content/posts
     create: true
-    slug: "{{slug}}" # Filename template, e.g., YYYY-MM-DD-title.md
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    identifier_field: "title"
+    preview_path: posts/{{slug}}
     fields:
       - {label: "Title", name: "title", widget: "string"}
       - {label: "Description", name: "description", widget: "string"}
