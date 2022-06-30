@@ -89,6 +89,14 @@
 .entry-cover {
     margin-bottom: var(--gap);
     text-align: center;
+    position: relative;
+}
+
+.entry-cover-overlay {
+    box-shadow: 0 -50px 100px var(--theme) inset;
+    width: 100%;
+    height: 100%;
+    position: absolute;
 }
 
 .entry-cover img {
