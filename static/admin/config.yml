@@ -39,16 +39,17 @@ collections:
       - label: Cover
         name: cover
         widget: object
-        required: false
         fields:
           - label: Image
             name: image
             widget: image
             allow_multiple: false
-            
+            required: false
+
           - label: Alt
             name: alt
             widget: string
+            required: false
 
           - label: Caption
             name: caption
