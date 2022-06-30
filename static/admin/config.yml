@@ -19,25 +19,20 @@ collections:
       - label: Title
         name: title
         widget: string
+
       - label: Description
         name: description
         widget: string
+
       - label: Publish Date
         name: date
         widget: datetime
-      - label: Cover
-        name: cover
-        widget: datetime
+
       - label: Tags
         name: tags
         widget: select
-        options:
-          - essay
-          - poem
-          - short
-          - story
-          - movie
-          - series
+        options: ["essay", "poem", "short", "story", "movie", "series"]
+
       - label: Cover
         name: cover
         widget: object
@@ -45,13 +40,14 @@ collections:
           - label: Image
             name: image
             widget: image
-            allow_multiple: 'false'
+            allow_multiple: false
           - label: Alt
             name: alt
             widget: string
           - label: Caption
             name: caption
             widget: string
+            
       - label: Body
         name: body
         widget: markdown
