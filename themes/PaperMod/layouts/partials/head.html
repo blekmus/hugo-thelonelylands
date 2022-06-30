@@ -10,6 +10,11 @@
 {{- /* Title */}}
 <title>{{ if .IsHome }}{{ else }}{{ if .Title }}{{ .Title }} | {{ end }}{{ end }}{{ site.Title }}</title>
 
+{{- /* netlifycms */}}
+{{- if .IsHome}}
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+{{- end}}
+
 {{- /* Meta */}}
 {{- if .IsHome }}
 {{ with site.Params.keywords -}}<meta name="keywords" content="{{- range $i, $e := . }}{{ if $i }}, {{ end }}{{ $e }}{{ end }}">{{ end }}

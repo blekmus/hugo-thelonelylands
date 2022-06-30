@@ -89,3 +89,6 @@ menu:
       name: Anilist
       url: /anilist/
       weight: 30
+
+cover:
+  responsiveImages: true
