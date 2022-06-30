@@ -29,9 +29,9 @@ collections:
           widget: "select",
           options: ["essay", "poem", "short", "story", "movie", "series"],
         }
-      - {label: "Cover", name: "cover", widget: "object", fields: {
+      - {label: "Cover", name: "cover", widget: "object", fields: 
         - {label: "Image", name: "image", widget: "image", allow_multiple: "false"}
         - {label: "Alt", name: "alt", widget: "string"}
         - {label: "Caption", name: "caption", widget: "string"}
-      }}
+      }
       - { label: "Body", name: "body", widget: "markdown" }
