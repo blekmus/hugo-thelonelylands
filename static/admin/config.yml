@@ -1,13 +1,12 @@
-site_url: https://thelonelylands.com
-display_url: https://thelonelylands.com
+site_url: 'https://thelonelylands.com'
+display_url: 'https://thelonelylands.com'
 
 backend:
   name: git-gateway
   branch: master
 
-media_folder: "static/images"
-public_folder: "/images"
-
+media_folder: static/images
+public_folder: /images
 publish_mode: editorial_workflow
 
 collections:
@@ -15,25 +14,44 @@ collections:
     label: Entries
     folder: content/posts
     create: true
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    # editor:
-    #   preview: false
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Description", name: "description", widget: "string" }
-      - { label: "Publish Date", name: "date", widget: "datetime" }
-      - { label: "Cover", name: "cover", widget: "datetime" }
-      - {
-          label: "Tags",
-          name: "tags",
-          widget: "select",
-          options: ["essay", "poem", "short", "story", "movie", "series"],
-        }
-      - label: "Cover", 
-        name: "cover", 
-        widget: "object", 
-        fields: 
-          - {label: "Image", name: "image", widget: "image", allow_multiple: "false"}
-          - {label: "Alt", name: "alt", widget: "string"}
-          - {label: "Caption", name: "caption", widget: "string"}
-      - { label: "Body", name: "body", widget: "markdown" }
+      - label: Title
+        name: title
+        widget: string
+      - label: Description
+        name: description
+        widget: string
+      - label: Publish Date
+        name: date
+        widget: datetime
+      - label: Cover
+        name: cover
+        widget: datetime
+      - label: Tags
+        name: tags
+        widget: select
+        options:
+          - essay
+          - poem
+          - short
+          - story
+          - movie
+          - series
+      - label: Cover
+        name: cover
+        widget: object
+        fields:
+          - label: Image
+            name: image
+            widget: image
+            allow_multiple: 'false'
+          - label: Alt
+            name: alt
+            widget: string
+          - label: Caption
+            name: caption
+            widget: string
+      - label: Body
+        name: body
+        widget: markdown
