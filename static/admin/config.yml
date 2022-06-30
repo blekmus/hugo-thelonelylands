@@ -31,8 +31,10 @@ collections:
 
       - label: Tags
         name: tags
-        widget: select
-        options: ["essay", "poem", "short", "story", "movie", "series"]
+        widget: list
+        max: 1
+        min: 1
+        default: ["essay"]
 
       - label: Cover
         name: cover
